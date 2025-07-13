@@ -2,3 +2,4 @@ rootProject.name = 'finclave'
 
 include 'account'
 include 'front'
+include 'exchange-rate'

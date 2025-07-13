@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: exchange-rate
+
+feign:
+  exchange: http://localhost:8083
+
+server:
+  port: 8082
