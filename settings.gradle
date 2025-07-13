@@ -1,0 +1,4 @@
+rootProject.name = 'finclave'
+
+include 'account'
+include 'front'
