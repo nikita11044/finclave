@@ -1,10 +1,12 @@
-package equinox.exchangerate.dto;
+package equinox.exchangerate.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 public class ExchangeRateUpdateDto {
-    private Integer rate;
+    private BigDecimal rate;
 }

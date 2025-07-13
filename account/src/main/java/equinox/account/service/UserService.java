@@ -4,7 +4,6 @@ import equinox.account.jpa.UserRepository;
 import equinox.account.model.dto.ApiResponseDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.UserDto;
-import equinox.account.model.entity.Account;
 import equinox.account.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

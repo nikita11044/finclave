@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: exchange
+  jackson:
+    time-zone: UTC
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: exchange_user
+    password: exchange_password
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        query.fail_on_pagination_over_collection_fetch: true
+        jdbc.time_zone: UTC
+        show_sql: false
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8083

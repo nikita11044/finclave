@@ -14,3 +14,16 @@ services:
       - "5432:5432"
     volumes:
       - /var/lib/postgresql/data
+
+  db-exchange:
+    image: postgres:15
+    container_name: db-exchange
+    restart: always
+    environment:
+      POSTGRES_DB: exchange_db
+      POSTGRES_USER: exchange_user
+      POSTGRES_PASSWORD: exchange_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - /var/lib/postgresql/data
