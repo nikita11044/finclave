@@ -84,9 +84,6 @@
             <tr th:each="account : ${accounts}">
                 <td style="font-weight:bold;" th:text="${account.currency.title}"/>
                 <td th:text="${account.balance+' '+account.currency.code}"/>
-<!--                <td style="text-align:right">-->
-<!--                    <input name="account" type="checkbox" th:checked="${account.isExists()}" th:value="${account.getCurrency().name()}"/>-->
-<!--                </td>-->
             </tr>
             <tr>
                 <td style="text-align:right" colspan="3">
