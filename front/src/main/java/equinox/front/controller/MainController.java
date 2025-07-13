@@ -21,6 +21,7 @@ public class MainController {
         UserDto user = accountServiceClient.getUser(authentication.getName());
         model.addAttribute("name", user.getName());
         model.addAttribute("birthdate", user.getBirthdate());
+        model.addAttribute("accounts", user.getAccounts());
         return "main";
     }
 }

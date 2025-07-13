@@ -84,5 +84,6 @@ public class UserController {
         model.addAttribute("login", dto.getLogin());
         model.addAttribute("name", dto.getName());
         model.addAttribute("birthdate", dto.getBirthdate());
+        model.addAttribute("accounts", dto.getAccounts());
     }
 }

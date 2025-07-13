@@ -1,9 +1,13 @@
 package equinox.account.service;
 
+import equinox.account.jpa.AccountRepository;
+import equinox.account.jpa.CurrencyRepository;
 import equinox.account.jpa.UserRepository;
+import equinox.account.mapper.UserMapper;
 import equinox.account.model.dto.ApiResponseDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.UserDto;
+import equinox.account.model.entity.Account;
 import equinox.account.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -22,6 +28,9 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
+    private final CurrencyRepository currencyRepository;
+    private final UserMapper userMapper;
 
     @Transactional
     public ApiResponseDto createUser(UserDto dto) {
@@ -51,6 +60,20 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+
+        var rub = currencyRepository.findByCode("RUB")
+                .orElseThrow(() -> new IllegalArgumentException("Currency RUB not found"));
+        var usd = currencyRepository.findByCode("USD")
+                .orElseThrow(() -> new IllegalArgumentException("Currency USD not found"));
+        var cny = currencyRepository.findByCode("CNY")
+                .orElseThrow(() -> new IllegalArgumentException("Currency CNY not found"));
+
+        var accounts = List.of(
+                Account.builder().currency(rub).balance(BigDecimal.ZERO).user(user).build(),
+                Account.builder().currency(usd).balance(BigDecimal.ZERO).user(user).build(),
+                Account.builder().currency(cny).balance(BigDecimal.ZERO).user(user).build()
+        );
+        accountRepository.saveAll(accounts);
 
         return response;
     }
@@ -112,14 +135,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDto getUser(String login) {
         return userRepository.findByLogin(login)
-                .map(user -> UserDto.builder()
-                        .login(user.getLogin())
-                        .password(user.getPassword())
-                        .birthdate(user.getBirthdate())
-                        .name(user.getName())
-                        .build())
-                .orElseThrow(IllegalArgumentException::new);
+                .map(userMapper::toDto)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with login: " + login));
     }
+
 
     private boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();

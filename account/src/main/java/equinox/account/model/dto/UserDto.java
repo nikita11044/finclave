@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,4 +14,5 @@ public class UserDto {
     private String confirmPassword;
     private String name;
     private LocalDate birthdate;
+    private List<AccountDto> accounts;
 }

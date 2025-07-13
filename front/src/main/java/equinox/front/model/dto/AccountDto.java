@@ -1,4 +1,4 @@
-package equinox.account.model.dto;
+package equinox.front.model.dto;
 
 import lombok.Data;
 
