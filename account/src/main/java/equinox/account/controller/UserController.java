@@ -1,6 +1,7 @@
 package equinox.account.controller;
 
 import equinox.account.model.dto.ApiResponseDto;
+import equinox.account.model.dto.CashOperationDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.UserDto;
 import equinox.account.service.UserService;
@@ -43,5 +44,10 @@ public class UserController {
     @GetMapping("/{login}")
     public UserDto getUser(@PathVariable("login") String login) {
         return userService.getUser(login);
+    }
+
+    @PostMapping("/cash/{login}")
+    public ApiResponseDto processCashOperation(@PathVariable("login") String login, @RequestBody CashOperationDto dto) {
+        return userService.processCashOperation(login, dto);
     }
 }

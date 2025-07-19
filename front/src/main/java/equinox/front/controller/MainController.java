@@ -1,7 +1,7 @@
 package equinox.front.controller;
 
 import equinox.front.client.AccountServiceClient;
-import equinox.front.model.dto.UserDto;
+import equinox.front.model.dto.AccountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,10 +18,16 @@ public class MainController {
     @GetMapping()
     public String mainPage(Model model, Authentication authentication) {
         model.addAttribute("login", authentication.getName());
-        UserDto user = accountServiceClient.getUser(authentication.getName());
+
+        var user = accountServiceClient.getUser(authentication.getName());
+        var currency = user.getAccounts().stream()
+                .map(AccountDto::getCurrency)
+                .toList();
+
         model.addAttribute("name", user.getName());
         model.addAttribute("birthdate", user.getBirthdate());
         model.addAttribute("accounts", user.getAccounts());
+        model.addAttribute("currency", currency);
         return "main";
     }
 }

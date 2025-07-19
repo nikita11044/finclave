@@ -5,10 +5,13 @@ import equinox.account.jpa.CurrencyRepository;
 import equinox.account.jpa.UserRepository;
 import equinox.account.mapper.UserMapper;
 import equinox.account.model.dto.ApiResponseDto;
+import equinox.account.model.dto.CashOperationDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.UserDto;
 import equinox.account.model.entity.Account;
+import equinox.account.model.entity.Currency;
 import equinox.account.model.entity.User;
+import equinox.account.service.validation.CashValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +34,7 @@ public class UserService {
     private final AccountRepository accountRepository;
     private final CurrencyRepository currencyRepository;
     private final UserMapper userMapper;
+    private final CashValidator cashValidator;
 
     @Transactional
     public ApiResponseDto createUser(UserDto dto) {
@@ -52,12 +56,11 @@ public class UserService {
             return response;
         }
 
-        var user = User.builder()
-                .login(dto.getLogin())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .name(dto.getName())
-                .birthdate(dto.getBirthdate())
-                .build();
+        var user = new User();
+        user.setLogin(dto.getLogin());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setName(dto.getName());
+        user.setBirthdate(dto.getBirthdate());
 
         userRepository.save(user);
 
@@ -69,10 +72,11 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Currency CNY not found"));
 
         var accounts = List.of(
-                Account.builder().currency(rub).balance(BigDecimal.ZERO).user(user).build(),
-                Account.builder().currency(usd).balance(BigDecimal.ZERO).user(user).build(),
-                Account.builder().currency(cny).balance(BigDecimal.ZERO).user(user).build()
+                buildEmptyAccount(user, rub),
+                buildEmptyAccount(user, usd),
+                buildEmptyAccount(user, cny)
         );
+
         accountRepository.saveAll(accounts);
 
         return response;
@@ -139,6 +143,38 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with login: " + login));
     }
 
+    @Transactional
+    public ApiResponseDto processCashOperation(String login, CashOperationDto dto) {
+        var user = userRepository.findByLoginWithAccounts(login)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with login: " + login));
+
+        var response = ApiResponseDto.builder()
+                .errors(new ArrayList<>())
+                .withError(false)
+                .build();
+
+        var errors = cashValidator.validate(dto, user);
+        if (!errors.isEmpty()) {
+            response.getErrors().addAll(errors);
+            response.setWithError(true);
+            return response;
+        }
+
+        var account = user.getAccounts().stream()
+                .filter(a -> a.getCurrency().getCode().equals(dto.getCurrencyCode()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Account not found"));
+
+        switch (dto.getAction()) {
+            case "GET" -> account.setBalance(account.getBalance().subtract(dto.getAmount()));
+            case "PUT" -> account.setBalance(account.getBalance().add(dto.getAmount()));
+            default -> throw new IllegalArgumentException("Unknown cash operation: " + dto.getAction());
+        }
+
+        userRepository.save(user);
+        return response;
+    }
+
 
     private boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();
@@ -164,5 +200,13 @@ public class UserService {
                 response.getErrors().add("Passwords do not match");
             }
         }
+    }
+
+    private Account buildEmptyAccount(User user, Currency currency) {
+        var account = new Account();
+        account.setCurrency(currency);
+        account.setBalance(BigDecimal.ZERO);
+        account.setUser(user);
+        return account;
     }
 }

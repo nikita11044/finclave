@@ -5,6 +5,11 @@ spring:
 feign:
   account: http://localhost:8081
   exchange: http://localhost:8083
+  cash: http://localhost:8084
 
 server:
   port: 8080
+
+logging:
+  level:
+    org.springframework.web: DEBUG
