@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/account" />
             <option value="$PROJECT_DIR$/cash" />
+            <option value="$PROJECT_DIR$/exchange" />
             <option value="$PROJECT_DIR$/exchange-rate" />
             <option value="$PROJECT_DIR$/front" />
           </set>
