@@ -9,6 +9,7 @@ import equinox.account.model.dto.CashOperationDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.TransferDto;
 import equinox.account.model.dto.UserDto;
+import equinox.account.model.dto.UserShortDto;
 import equinox.account.model.entity.Account;
 import equinox.account.model.entity.Currency;
 import equinox.account.model.entity.User;
@@ -145,6 +146,15 @@ public class UserService {
                 .map(userMapper::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with login: " + login));
     }
+
+    @Transactional(readOnly = true)
+    public List<UserShortDto> getAllUsers(String login) {
+        return userRepository.findAllExcept(login)
+                .stream()
+                .map(userMapper::toShortDto)
+                .toList();
+    }
+
 
     @Transactional
     public ApiResponseDto processCashOperation(String login, CashOperationDto dto) {

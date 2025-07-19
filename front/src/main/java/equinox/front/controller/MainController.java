@@ -24,10 +24,13 @@ public class MainController {
                 .map(AccountDto::getCurrency)
                 .toList();
 
+        var users = accountServiceClient.getAllUsers(authentication.getName());
+
         model.addAttribute("name", user.getName());
         model.addAttribute("birthdate", user.getBirthdate());
         model.addAttribute("accounts", user.getAccounts());
         model.addAttribute("currency", currency);
+        model.addAttribute("users", users);
         return "main";
     }
 }

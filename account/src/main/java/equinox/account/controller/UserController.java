@@ -5,6 +5,7 @@ import equinox.account.model.dto.CashOperationDto;
 import equinox.account.model.dto.PasswordUpdateDto;
 import equinox.account.model.dto.TransferDto;
 import equinox.account.model.dto.UserDto;
+import equinox.account.model.dto.UserShortDto;
 import equinox.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -45,6 +48,11 @@ public class UserController {
     @GetMapping("/{login}")
     public UserDto getUser(@PathVariable("login") String login) {
         return userService.getUser(login);
+    }
+
+    @GetMapping("/all/{login}")
+    public List<UserShortDto> allUsers(@PathVariable("login") String login) {
+        return userService.getAllUsers(login);
     }
 
     @PostMapping("/cash/{login}")

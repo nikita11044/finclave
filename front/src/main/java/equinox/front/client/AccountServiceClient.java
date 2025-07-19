@@ -3,6 +3,7 @@ package equinox.front.client;
 import equinox.front.model.dto.ApiResponseDto;
 import equinox.front.model.dto.PasswordUpdateDto;
 import equinox.front.model.dto.UserDto;
+import equinox.front.model.dto.UserShortDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,11 +12,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(value = "account", url = "${feign.account}")
 public interface AccountServiceClient {
 
     @GetMapping("/api/v1/users/{login}")
     UserDto getUser(@PathVariable("login") String login);
+
+    @GetMapping("/api/v1/users/all/{login}")
+    List<UserShortDto> getAllUsers(@PathVariable("login") String login);
 
     @PostMapping("/api/v1/users")
     ApiResponseDto createUser(@RequestBody UserDto dto);
