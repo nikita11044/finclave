@@ -1,10 +1,9 @@
 package equinox.exchange.service;
 
-import equinox.exchange.jpa.ExchangeRateRepository;
+import equinox.exchange.jpa.ExchangeRepository;
+import equinox.exchange.mapper.ExchangeMapper;
 import equinox.exchange.model.dto.ExchangeRateDto;
 import equinox.exchange.model.dto.ExchangeRateUpdateDto;
-import equinox.exchange.model.entity.ExchangeRate;
-import equinox.exchange.mapper.ExchangeRateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -14,35 +13,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExchangeRateService {
+public class ExchangeService {
 
-    private final ExchangeRateRepository exchangeRateRepository;
-    private final ExchangeRateMapper exchangeRateMapper;
+    private final ExchangeRepository exchangeRepository;
+    private final ExchangeMapper exchangeMapper;
 
     @Transactional(readOnly = true)
-    public BigDecimal convert(String from, String to, Long value) {
-        List<ExchangeRate> rates = exchangeRateRepository.findAll();
+    public BigDecimal convert(String from, String to, BigDecimal amount) {
+        var rates = exchangeRepository.findAll();
 
-        ExchangeRate fromRate = rates.stream()
+        var fromRate = rates.stream()
                 .filter(r -> r.getCode().equals(from))
                 .findFirst()
                 .orElseThrow();
 
-        ExchangeRate toRate = rates.stream()
+        var toRate = rates.stream()
                 .filter(r -> r.getCode().equals(to))
                 .findFirst()
                 .orElseThrow();
 
         if (fromRate.isBase() && toRate.isBase()) {
-            return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
+            return amount.setScale(2, RoundingMode.HALF_UP);
         }
-
-        BigDecimal amount = BigDecimal.valueOf(value);
 
         return amount
                 .divide(fromRate.getRate(), 10, RoundingMode.HALF_UP)
@@ -52,18 +48,18 @@ public class ExchangeRateService {
 
     @Transactional(readOnly = true)
     public List<ExchangeRateDto> getRates() {
-        return exchangeRateRepository.findAll(Sort.by("id")).stream()
-                .map(exchangeRateMapper::toDto)
+        return exchangeRepository.findAll(Sort.by("id")).stream()
+                .map(exchangeMapper::toDto)
                 .toList();
     }
 
 
     @Transactional
     public void updateExchangeRate(ExchangeRateUpdateDto dto) {
-        exchangeRateRepository.findRandomByBaseFalse()
+        exchangeRepository.findRandomByBaseFalse()
                 .ifPresent(rate -> {
                     rate.setRate(dto.getRate());
-                    exchangeRateRepository.save(rate);
+                    exchangeRepository.save(rate);
                 });
     }
 }

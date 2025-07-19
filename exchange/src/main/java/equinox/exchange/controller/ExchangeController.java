@@ -2,9 +2,8 @@ package equinox.exchange.controller;
 
 import equinox.exchange.model.dto.ExchangeRateDto;
 import equinox.exchange.model.dto.ExchangeRateUpdateDto;
-import equinox.exchange.service.ExchangeRateService;
+import equinox.exchange.service.ExchangeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,24 +19,24 @@ import java.util.List;
 @RequestMapping("/api/v1/exchange")
 public class ExchangeController {
 
-    private final ExchangeRateService exchangeRateService;
+    private final ExchangeService exchangeService;
 
     @GetMapping
     public List<ExchangeRateDto> getRates() {
-        return exchangeRateService.getRates();
+        return exchangeService.getRates();
     }
 
     @GetMapping("/convert")
     public BigDecimal convert(
             @RequestParam("from") String from,
             @RequestParam("to") String to,
-            @RequestParam("amount") Long amount
+            @RequestParam("amount") BigDecimal amount
     ) {
-        return exchangeRateService.convert(from, to, amount);
+        return exchangeService.convert(from, to, amount);
     }
 
     @PostMapping("/updateExchangeRate")
     public void updateRandomCurrency(@RequestBody ExchangeRateUpdateDto dto) {
-        exchangeRateService.updateExchangeRate(dto);
+        exchangeService.updateExchangeRate(dto);
     }
 }

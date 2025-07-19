@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long> {
+public interface ExchangeRepository extends JpaRepository<ExchangeRate, Long> {
 
     @Query(value = "SELECT * FROM exchange_rates WHERE base = false ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<ExchangeRate> findRandomByBaseFalse();

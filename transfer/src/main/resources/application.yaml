@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: transfer
+
+server:
+  port: 8085
+
+feign:
+  account: http://localhost:8081
+  exchange: http://localhost:8083

@@ -129,21 +129,21 @@
                     <td style="font-weight:bold;">Перевод себе</td>
                     <td>
                         Со счета
-                        <select name="from_currency">
-                            <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.getTitle()}" th:text="${eachCurrency.getCode()}"/>
+                        <select name="fromCurrency">
+                            <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.getCode()}" th:text="${eachCurrency.getTitle()}"/>
                         </select>
                     </td>
                     <td>
                         На счет
-                        <select name="to_currency">
-                            <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.getTitle()}" th:text="${eachCurrency.getCode()}"/>
+                        <select name="toCurrency">
+                            <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.getCode()}" th:text="${eachCurrency.getTitle()}"/>
                         </select>
                     </td>
                     <td>
-                        <input name="value" type="number" style="width:100%" required/>
+                        <input name="amount" type="number" style="width:100%" required/>
                     </td>
                     <td style="text-align:right">
-                        <input hidden name="to_login" th:value="${login}"/>
+                        <input hidden name="toLogin" th:value="${login}"/>
                         <button>Перевести</button>
                     </td>
                 </tr>

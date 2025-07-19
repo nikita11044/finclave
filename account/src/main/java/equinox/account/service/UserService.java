@@ -7,11 +7,13 @@ import equinox.account.mapper.UserMapper;
 import equinox.account.model.dto.ApiResponseDto;
 import equinox.account.model.dto.CashOperationDto;
 import equinox.account.model.dto.PasswordUpdateDto;
+import equinox.account.model.dto.TransferDto;
 import equinox.account.model.dto.UserDto;
 import equinox.account.model.entity.Account;
 import equinox.account.model.entity.Currency;
 import equinox.account.model.entity.User;
 import equinox.account.service.validation.CashValidator;
+import equinox.account.service.validation.TransferValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +37,7 @@ public class UserService {
     private final CurrencyRepository currencyRepository;
     private final UserMapper userMapper;
     private final CashValidator cashValidator;
+    private final TransferValidator transferValidator;
 
     @Transactional
     public ApiResponseDto createUser(UserDto dto) {
@@ -175,6 +178,49 @@ public class UserService {
         return response;
     }
 
+    @Transactional
+    public ApiResponseDto processTransferOperation(String login, TransferDto dto) {
+        var user = userRepository.findByLoginWithAccounts(login)
+                .orElseThrow(IllegalArgumentException::new);
+
+        var accounts = user.getAccounts();
+
+        var toUser = userRepository.findByLoginWithAccounts(login)
+                .orElseThrow(IllegalArgumentException::new);
+
+        var toUserAccounts = toUser.getAccounts();
+
+        var response = ApiResponseDto.builder()
+                .errors(new ArrayList<>())
+                .withError(false)
+                .build();
+
+        var errors = transferValidator.validate(dto, user, toUser);
+
+        if (!errors.isEmpty()) {
+            response.getErrors().addAll(errors);
+            response.setWithError(true);
+            return response;
+        }
+
+        var accountFrom = accounts.stream()
+                .filter(a -> a.getCurrency().getCode().equals(dto.getFromCurrency()))
+                .findFirst()
+                .orElseThrow();
+
+        var accountTo = toUserAccounts.stream()
+                .filter(a -> a.getCurrency().getCode().equals(dto.getToCurrency()))
+                .findFirst()
+                .orElseThrow();
+
+        accountFrom.setBalance(accountFrom.getBalance().subtract(dto.getAmount()));
+        accountTo.setBalance(accountTo.getBalance().add(dto.getConvertedAmount()));
+
+        userRepository.save(user);
+        userRepository.save(toUser);
+
+        return response;
+    }
 
     private boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();
