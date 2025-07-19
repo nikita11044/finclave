@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: cash
+
+server:
+  port: 8084
+feign:
+  account: http://localhost:8083
