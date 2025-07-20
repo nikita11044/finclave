@@ -39,6 +39,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final CashValidator cashValidator;
     private final TransferValidator transferValidator;
+    private final NotificationOutboxService notificationOutboxService;
 
     @Transactional
     public ApiResponseDto createUser(UserDto dto) {
@@ -116,6 +117,8 @@ public class UserService {
 
         userRepository.save(user);
 
+        notificationOutboxService.scheduleNotification(user.getLogin(), "User info has been updated");
+
         return response;
     }
 
@@ -135,6 +138,9 @@ public class UserService {
                 .map(user -> {
                     user.setPassword(passwordEncoder.encode(dto.getPassword()));
                     userRepository.save(user);
+
+                    notificationOutboxService.scheduleNotification(user.getLogin(), "User info has been updated");
+
                     return response;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Invalid login"));

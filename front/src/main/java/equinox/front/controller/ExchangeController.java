@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exchange")
+@RequestMapping("/api/exchange")
 public class ExchangeController {
 
     private final ExchangeServiceClient exchangeServiceClient;

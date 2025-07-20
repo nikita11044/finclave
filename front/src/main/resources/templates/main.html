@@ -6,7 +6,7 @@
     <script language="JavaScript">
         setInterval(() => {
             var td = document.getElementById('exchange_rates');
-            fetch('http://localhost:8080/api/v1/exchange')
+            fetch('http://localhost:8080/api/exchange')
                 .then(response => response.json())
                 .then(json => {
                     var table = '<table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">';
@@ -24,6 +24,68 @@
                 })
                 .catch(error => td.innerHTML = 'Ошибка при получении данных курсов валют');
         }, 1000);
+            setInterval(() => {
+            const td = document.getElementById('notifications');
+            const notificationUrl = 'http://localhost:8080/api/notifications';
+
+            fetch(notificationUrl)
+            .then(response => response.json())
+            .then(json => {
+            if (!json || json.length === 0) {
+            td.innerHTML = `
+                        <div style="text-align:center; color:#888; font-style:italic; margin-top:20px;">
+                            Ничего нового
+                        </div>`;
+            return;
+        }
+
+            let html = `
+                    <div style="
+                        width: 400px;
+                        margin: 0 auto;
+                        background: #f9f9f9;
+                        border-radius: 12px;
+                        padding: 16px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                        font-family: 'Segoe UI', sans-serif;
+                        animation: fadeIn 0.3s ease-in-out;
+                    ">
+                        <div style="
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 12px;
+                            text-align: center;
+                            color: #333;
+                        ">Уведомления</div>
+                `;
+
+            json.forEach(message => {
+            html += `
+                        <div style="
+                            background: white;
+                            border-radius: 8px;
+                            padding: 10px 14px;
+                            margin-bottom: 10px;
+                            border-left: 4px solid #007BFF;
+                            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+                            transition: background-color 0.2s;
+                        ">
+                            ${message}
+                        </div>`;
+        });
+
+            html += `</div>`;
+            td.innerHTML = html;
+        })
+            .catch(error => {
+            td.innerHTML = `
+                    <div style="text-align:center; color:#888; font-style:italic; margin-top:20px;">
+                        Ошибка при получении уведомлений
+                    </div>`;
+        });
+        }, 1000);
+    </script>
+
     </script>
 </head>
 
@@ -36,53 +98,56 @@
     <b>ВЫЙТИ &cudarrr;</b>
 </a>
 <table style="width:70%;margin-left:auto;margin-right:auto;">
-    <tr><td style="padding:2px;">
-        <form method="post" th:action="${'/user/updatePassword'}">
-        <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
-            <tr>
-                <td style="font-weight:bold;">Логин</td>
-                <td colspan="2" th:text="${login}"/>
-            </tr>
-            <tr>
-                <td style="font-weight:bold;">Изменить пароль</td>
-                <td>
-                    <p style="color:red;" th:if="${passwordErrors!=null}" th:each="passwordError : ${passwordErrors}" th:text="${passwordError}"/>
-                    <p>
-                        Пароль: <input name="password" type="password" required/>
-                    </p>
-                    <p>
-                        Повторите пароль: <input name="confirmPassword" type="password" required/>
-                    </p>
-                </td>
-                <td style="text-align:right">
-                    <button>Изменить пароль</button>
-                </td>
-            </tr>
-        </table>
-        </form>
-    </td>
-    <tr><td style="padding:2px;">
-        <form method="post" th:action="${'/user/updateUser'}">
-        <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
-            <tr th:if="${userAccountsErrors!=null}" th:each="userAccountsError : ${userAccountsErrors}">
-                <td style="color:red;" th:text="${userAccountsError}"/>
-            </tr>
-            <tr>
-                <td style="font-weight:bold;">Фамилия Имя</td>
-                <td th:text="${name}"/>
-                <td>
-                    <input name="name" type="text" style="width:100%"/>
-                </td>
-            </tr>
-            <tr>
-                <td style="font-weight:bold;">Дата рождения</td>
-                <td th:text="${birthdate}"/>
-                <td>
-                    <input name="birthdate" type="date" style="width:100%"/>
-                </td>
-            </tr>
-            <tr th:each="account : ${accounts}">
-                <td style="font-weight:bold;" th:text="${account.currency.title}"/>
+    <tr>
+        <td style="padding:2px;">
+            <form method="post" th:action="${'/user/updatePassword'}">
+                <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
+                    <tr>
+                        <td style="font-weight:bold;">Логин</td>
+                        <td colspan="2" th:text="${login}"/>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Изменить пароль</td>
+                        <td>
+                            <p style="color:red;" th:if="${passwordErrors!=null}"
+                               th:each="passwordError : ${passwordErrors}" th:text="${passwordError}"/>
+                            <p>
+                                Пароль: <input name="password" type="password" required/>
+                            </p>
+                            <p>
+                                Повторите пароль: <input name="confirmPassword" type="password" required/>
+                            </p>
+                        </td>
+                        <td style="text-align:right">
+                            <button>Изменить пароль</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    <tr>
+        <td style="padding:2px;">
+            <form method="post" th:action="${'/user/updateUser'}">
+                <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
+                    <tr th:if="${userAccountsErrors!=null}" th:each="userAccountsError : ${userAccountsErrors}">
+                        <td style="color:red;" th:text="${userAccountsError}"/>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Фамилия Имя</td>
+                        <td th:text="${name}"/>
+                        <td>
+                            <input name="name" type="text" style="width:100%"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Дата рождения</td>
+                        <td th:text="${birthdate}"/>
+                        <td>
+                            <input name="birthdate" type="date" style="width:100%"/>
+                        </td>
+                    </tr>
+                    <tr th:each="account : ${accounts}">
+                        <td style="font-weight:bold;" th:text="${account.currency.title}"/>
                 <td th:text="${account.balance+' '+account.currency.code}"/>
             </tr>
             <tr>
@@ -187,6 +252,7 @@
         </form>
     </td></tr>
     <tr><td style="padding:2px;" id="exchange_rates">
+    <tr><td style="padding:2px;" id="notifications">
     </td></tr>
 </table>
 </body>
