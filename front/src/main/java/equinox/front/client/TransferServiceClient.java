@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "transfer", url = "${feign.transfer}")
+@FeignClient(value = "gateway", contextId = "transfer")
 public interface TransferServiceClient {
-    @PostMapping("/api/v1/transfer/{login}")
+    @PostMapping("/transfer/api/v1/transfer/{login}")
     ApiResponseDto processTransferOperation(@PathVariable("login") String login, @RequestBody TransferDto dto);
 }

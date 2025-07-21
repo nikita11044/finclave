@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "cash", url = "${feign.cash}")
+@FeignClient(value = "gateway", contextId = "cash")
 public interface CashServiceClient {
 
-    @PostMapping("/api/v1/cash/{login}")
+    @PostMapping("/cash/api/v1/cash/{login}")
     ApiResponseDto processCashOperation(@PathVariable("login") String login, @RequestBody CashOperationDto dto);
 }

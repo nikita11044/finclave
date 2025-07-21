@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-@FeignClient(value = "exchange", url = "${feign.exchange}")
+@FeignClient(value = "gateway", contextId = "exchange")
 public interface ExchangeServiceClient {
-    @GetMapping("/api/v1/exchange/convert")
+    @GetMapping("/exchange/api/v1/exchange/convert")
     BigDecimal convert(
             @RequestParam("from") String from,
             @RequestParam("to") String to,
