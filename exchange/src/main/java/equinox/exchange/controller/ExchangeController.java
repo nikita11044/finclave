@@ -4,6 +4,8 @@ import equinox.exchange.model.dto.ExchangeRateDto;
 import equinox.exchange.model.dto.ExchangeRateUpdateDto;
 import equinox.exchange.service.ExchangeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,12 @@ import java.util.List;
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test(Authentication auth) {
+        return ResponseEntity.ok(auth);
+    }
+
 
     @GetMapping
     public List<ExchangeRateDto> getRates() {

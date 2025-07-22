@@ -10,11 +10,15 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/account" />
+            <option value="$PROJECT_DIR$/blocker" />
             <option value="$PROJECT_DIR$/cash" />
             <option value="$PROJECT_DIR$/config-server" />
+            <option value="$PROJECT_DIR$/eureka" />
             <option value="$PROJECT_DIR$/exchange" />
             <option value="$PROJECT_DIR$/exchange-rate" />
             <option value="$PROJECT_DIR$/front" />
+            <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/notification" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -43,6 +47,14 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/eureka" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/eureka" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/exchange" />
         <option name="modules">
           <set>
@@ -63,6 +75,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/front" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/gateway" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/gateway" />
           </set>
         </option>
       </GradleProjectSettings>

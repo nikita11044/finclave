@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 @FeignClient(value = "gateway", contextId = "exchange")
 public interface ExchangeServiceClient {
+
     @GetMapping("/exchange/api/v1/exchange/convert")
     BigDecimal convert(
             @RequestParam("from") String from,
