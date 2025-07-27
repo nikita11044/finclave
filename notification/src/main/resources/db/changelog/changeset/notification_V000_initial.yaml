@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: notification-V000
+      author: overengineered
+      changes:
+        - createTable:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: notification_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: login
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_notifications_login
+            tableName: notifications
+            unique: false
+            columns:
+              - column:
+                  name: login

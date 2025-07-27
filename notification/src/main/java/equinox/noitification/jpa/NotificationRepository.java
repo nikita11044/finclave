@@ -16,8 +16,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Modifying
     @Query(value = """
-    INSERT INTO notifications (notification_id, login, message, created_at)
-    VALUES (:notificationId, :login, :message, now())
+    INSERT INTO notifications (notification_id, login, message)
+    VALUES (:notificationId, :login, :message)
     ON CONFLICT (notification_id) DO NOTHING
     """, nativeQuery = true)
     void insert(

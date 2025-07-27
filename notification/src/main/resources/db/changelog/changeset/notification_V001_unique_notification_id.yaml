@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: notification-V001
+      author: overengineered
+      changes:
+        - addUniqueConstraint:
+            tableName: notifications
+            columnNames: notification_id
+            constraintName: notifications_notification_id_key
+            schemaName: public

@@ -16,7 +16,7 @@ public class NotificationsController {
     private final NotificationServiceClient notificationServiceClient;
 
     @GetMapping(value = "/api/notifications", produces = "application/json")
-    public List<String> fetchAll(Authentication authentication) {
+    public List<String> getAllNotifications(Authentication authentication) {
         return notificationServiceClient.getAllNotifications(authentication.getName());
     }
 }
