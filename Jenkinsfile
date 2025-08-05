@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk21'
-        gradle 'Gradle-8.14.2'
-     }
-
     stages {
         stage('Package & Dockerize Services') {
             steps {
