@@ -206,6 +206,8 @@ keycloak:
             pathType: ImplementationSpecific
 
 account-db:
+  image:
+    tag: "15"
   enabled: true
   auth:
     database:  account_db
@@ -217,6 +219,8 @@ account-db:
       size: 1Gi
 
 exchange-db:
+  image:
+    tag: "15"
   enabled: true
   auth:
     database:  exchange_db
@@ -228,6 +232,8 @@ exchange-db:
       size: 1Gi
 
 notification-db:
+  image:
+    tag: "15"
   enabled: true
   auth:
     database:  notification_db
