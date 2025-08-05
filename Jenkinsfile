@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        gradle 'Gradle-8.14.2'
+     }
+
     stages {
         stage('Package & Dockerize Services') {
             steps {
