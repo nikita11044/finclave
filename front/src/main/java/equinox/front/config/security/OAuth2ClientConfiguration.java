@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 public class OAuth2ClientConfiguration {
 
     @Bean
-    @Primary
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
             OAuth2AuthorizedClientService authorizedClientService

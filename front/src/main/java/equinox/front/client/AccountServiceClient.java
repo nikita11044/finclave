@@ -14,24 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "gateway", contextId = "account")
+@FeignClient(value = "account", url = "${feign.account}")
 public interface AccountServiceClient {
 
-    @GetMapping("/account/api/v1/users/{login}")
+    @GetMapping("/api/v1/users/{login}")
     UserDto getUser(@PathVariable("login") String login);
 
-    @GetMapping("/account/api/v1/users/all/{login}")
+    @GetMapping("/api/v1/users/all/{login}")
     List<UserShortDto> getAllUsers(@PathVariable("login") String login);
 
-    @PostMapping("/account/api/v1/users")
+    @PostMapping("/api/v1/users")
     ApiResponseDto createUser(@RequestBody UserDto dto);
 
-    @PutMapping("/account/api/v1/users/{login}/updateUser")
+    @PutMapping("/api/v1/users/{login}/updateUser")
     ApiResponseDto updateUser(@PathVariable String login, @RequestBody UserDto dto);
 
-    @PostMapping("/account/api/v1/users/auth")
+    @PostMapping("/api/v1/users/auth")
     boolean authenticate(@RequestParam("login") String login, @RequestParam("password") String password);
 
-    @PutMapping("/account/api/v1/users/{login}")
+    @PutMapping("/api/v1/users/{login}")
     ApiResponseDto updatePassword(@PathVariable String login, @RequestBody PasswordUpdateDto dto);
 }

@@ -1,0 +1,239 @@
+# Global values.yaml (if any)
+global:
+  domain: finclave.local # Example domain for ingress
+
+# Configuration for the customer-service subchart
+# NOTE: For local development (Minikube/Kind/Docker Desktop), build the image locally
+# (e.g., `docker build -t customer-service:0.0.1-SNAPSHOT .` in customer-service dir)
+# and ensure your K8s cluster can access local images (e.g., `minikube docker-env` or `kind load docker-image ...`).
+front:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: front # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: front.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+blocker:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: blocker # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: blocker.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+cash:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: cash # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: cash.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+exchange-rate:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: exchange-rate # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: exchange-rate.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+transfer:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: transfer # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: transfer.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+account:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: account # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080 # Different port for order service
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: account.finclave.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+  config:
+    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
+    database_url: "jdbc:postgresql://{{ .Release.Name }}-app-db:5432/appdb"
+    database_username: "appdb"
+    # database_password_secret: "{{ .Release.Name }}-order-db-postgresql"
+    # database_password_secret_key: "postgresql-password"
+
+exchange:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: exchange # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080 # Different port for order service
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: exchange.finclave.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+  config:
+    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
+    database_url: "jdbc:postgresql://{{ .Release.Name }}-app-db:5432/appdb"
+    database_username: "appdb"
+    # database_password_secret: "{{ .Release.Name }}-order-db-postgresql"
+    # database_password_secret_key: "postgresql-password"
+
+notification:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: notification # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080 # Different port for order service
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: notification.finclave.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+  config:
+    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
+    database_url: "jdbc:postgresql://{{ .Release.Name }}-app-db:5432/appdb"
+    database_username: "appdb"
+    # database_password_secret: "{{ .Release.Name }}-order-db-postgresql"
+    # database_password_secret_key: "postgresql-password"
+
+
+keycloak:
+  replicaCount: 1
+  image:
+    # --- REVERTED TO LOCAL REPO ---
+    repository: keycloak # Removed registry prefix
+    tag: "0.0.1-SNAPSHOT"
+    pullPolicy: IfNotPresent # Use IfNotPresent for local images
+    # -----------------------------
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: "nginx" # Specify your ingress controller class
+    hosts:
+      - host: keycloak.finclave.local # Use global domain or specific
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+account-db:
+  enabled: true
+  auth:
+    database:  account_db
+    username:  account_user
+    password:  "AccPass123!"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+exchange-db:
+  enabled: true
+  auth:
+    database:  exchange_db
+    username:  exchange_user
+    password:  "ExchPass456!"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+notification-db:
+  enabled: true
+  auth:
+    database:  notification_db
+    username:  notification_user
+    password:  "NotifPass789!"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi

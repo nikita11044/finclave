@@ -1,0 +1,9 @@
+dependencies:
+- name: front
+  repository: file://./charts/front
+  version: 0.1.0
+- name: keycloak
+  repository: file://./charts/keycloak
+  version: 0.1.0
+digest: sha256:d199427ad61422e648a7a1ef65740442e9fc9756698a0770da22e82dc769caa1
+generated: "2025-08-02T15:25:57.890656+03:00"

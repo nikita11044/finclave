@@ -69,7 +69,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Primary
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
             OAuth2AuthorizedClientService authorizedClientService

@@ -5,9 +5,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "gateway", contextId = "exchange")
+@FeignClient(value = "exchange", url = "${feign.exchange}")
 public interface ExchangeServiceClient {
 
-    @PostMapping("/exchange/api/v1/exchange/updateExchangeRate")
+    @PostMapping("/api/v1/exchange/updateExchangeRate")
     void updateExchangeRate(@RequestBody ExchangeRateUpdateDto dto);
 }

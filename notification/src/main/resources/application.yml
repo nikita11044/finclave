@@ -1,10 +1,47 @@
 spring:
   application:
     name: notification
-  config:
-    import: configserver:http://localhost:8088
-  profiles:
-    active: default
-  cloud:
-    config:
-      label: main
+  jackson:
+    time-zone: UTC
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: notification_user
+    password: notification_password
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        query.fail_on_pagination_over_collection_fetch: true
+        jdbc.time_zone: UTC
+        show_sql: false
+    open-in-view: false
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/finclave
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9090/realms/finclave
+        registration:
+          finclave:
+            provider: keycloak
+            authorizationGrantType: client_credentials
+            client-id: finclave
+            client-secret: Fdx84febgALBIuFdC1jLzSl6mT8PxJwa
+            scope: profile
+            clientAuthenticationMethod: client_secret_post
+
+server:
+  port: 8090

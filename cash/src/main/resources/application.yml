@@ -1,10 +1,27 @@
 spring:
   application:
     name: cash
-  config:
-    import: configserver:http://localhost:8088
-  profiles:
-    active: default
-  cloud:
-    config:
-      label: main
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/finclave
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9090/realms/finclave
+        registration:
+          finclave:
+            provider: keycloak
+            authorizationGrantType: client_credentials
+            client-id: finclave
+            client-secret: Fdx84febgALBIuFdC1jLzSl6mT8PxJwa
+            scope: profile
+            clientAuthenticationMethod: client_secret_post
+
+server:
+  port: 8084
+
+feign:
+  account: http://localhost:8081
+  blocker: http://localhost:8089

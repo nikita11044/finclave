@@ -1,0 +1,47 @@
+apiVersion: v2
+name: finclave
+description: Umbrella chart for the Finclave app
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: front
+    version: "0.1.0"
+    repository: "file://./charts/front" # Local path reference
+  - name: blocker
+    version: "0.1.0"
+    repository: "file://./charts/blocker" # Local path reference
+  - name: cash
+    version: "0.1.0"
+    repository: "file://./charts/cash" # Local path reference
+  - name: exchange-rate
+    version: "0.1.0"
+    repository: "file://./charts/exchange-rate" # Local path reference
+  - name: transfer
+    version: "0.1.0"
+    repository: "file://./charts/transfer" # Local path reference
+  - name: account
+    version: "0.1.0"
+    repository: "file://./charts/account" # Local path reference
+  - name: exchange
+    version: "0.1.0"
+    repository: "file://./charts/exchange" # Local path reference
+  - name: notification
+    version: "0.1.0"
+    repository: "file://./charts/notification" # Local path reference
+  - name: keycloak
+    version: "0.1.0"
+    repository: "file://./charts/keycloak" # Local path reference
+  - name: postgresql
+    alias: account-db
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: postgresql
+    alias: exchange-db
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: postgresql
+    alias: notification-db
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
