@@ -9,7 +9,9 @@ pipeline {
 
                     services.each { svc ->
                         dir(svc) {
-                            sh 'gradle clean build -x test --no-daemon'
+                            sh 'chmod +x gradlew'
+
+                            sh './gradlew clean build'
 
                             sh "docker build -t ${svc}:0.0.1-SNAPSHOT ."
 
