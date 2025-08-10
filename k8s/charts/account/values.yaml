@@ -82,3 +82,12 @@ config:
   database_url:      "jdbc:postgresql://{{ .Release.Name }}-account-db:5432/account_db"
   database_username: "account_user"
   database_password: "AccPass123!"
+
+tests:
+  images:
+    curl: curlimages/curl:8.10.1
+  health:
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    timeoutSeconds: 180
+    intervalSeconds: 3

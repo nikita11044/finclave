@@ -82,3 +82,12 @@ config:
   database_url:      "jdbc:postgresql://{{ .Release.Name }}-exchange-db:5432/exchange_db"
   database_username: "exchange_user"
   database_password: "ExchPass456!"
+
+tests:
+  images:
+    curl: curlimages/curl:8.10.1
+  health:
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    timeoutSeconds: 180
+    intervalSeconds: 3

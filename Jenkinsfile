@@ -32,6 +32,7 @@ pipeline {
                 sh '''
                   helm dependency update ./k8s
                   helm upgrade --install myapp ./k8s
+                  helm test myapp --logs
                 '''
             }
         }

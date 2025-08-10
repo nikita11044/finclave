@@ -82,3 +82,12 @@ config:
   database_url:      "jdbc:postgresql://{{ .Release.Name }}-notification-db:5432/notification_db"
   database_username: "notification_user"
   database_password: "NotifPass789!"
+
+tests:
+  images:
+    curl: curlimages/curl:8.10.1
+  health:
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    timeoutSeconds: 180
+    intervalSeconds: 3

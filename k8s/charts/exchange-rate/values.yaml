@@ -77,3 +77,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+tests:
+  images:
+    curl: curlimages/curl:8.10.1
+  health:
+    readinessPath: /actuator/health/readiness
+    livenessPath: /actuator/health/liveness
+    timeoutSeconds: 180
+    intervalSeconds: 3

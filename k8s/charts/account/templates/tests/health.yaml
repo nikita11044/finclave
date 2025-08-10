@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "account.fullname" . }}-health"
+  labels:
+    app.kubernetes.io/name: "{{ include "account.name" . }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "20"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  containers:
+    - name: curl
+      image: {{ .Values.tests.images.curl | default "curlimages/curl:8.10.1" | quote }}
+      args:
+        - sh
+        - -c
+        - |
+          set -e
+          NS="{{ .Release.Namespace }}"
+          PORT="{{ .Values.service.port | default 8080 }}"
+          BASE="http://{{ include "account.fullname" . }}.${NS}.svc.cluster.local:${PORT}"
+
+          READINESS="{{ .Values.tests.health.readinessPath | default "/actuator/health/readiness" }}"
+          LIVENESS="{{ .Values.tests.health.livenessPath   | default "/actuator/health/liveness" }}"
+          TIMEOUT="{{ .Values.tests.health.timeoutSeconds   | default 120 }}"
+          INTERVAL="{{ .Values.tests.health.intervalSeconds | default 3 }}"
+
+          tries=$(( TIMEOUT / INTERVAL ))
+
+          echo "Probing readiness ${BASE}${READINESS}"
+          ok=0
+          for i in $(seq 1 ${tries}); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}${READINESS}" || true)
+            [ "$code" = "200" ] && ok=1 && echo "Readiness OK" && break
+            echo "Attempt $i/${tries} readiness: ${code}"; sleep "${INTERVAL}"
+          done
+          [ "$ok" = "1" ] || { echo "Readiness failed"; exit 1; }
+
+          echo "Probing liveness  ${BASE}${LIVENESS}"
+          ok=0
+          for i in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}${LIVENESS}" || true)
+            [ "$code" = "200" ] && ok=1 && echo "Liveness OK" && break
+            echo "Attempt $i/10 liveness: ${code}"; sleep "${INTERVAL}"
+          done
+          [ "$ok" = "1" ] || { echo "Liveness failed"; exit 1; }
