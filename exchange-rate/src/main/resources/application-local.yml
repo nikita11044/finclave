@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+    discovery:
+      client:
+        simple:
+          instances:
+            exchange:
+              - uri: http://localhost:8083

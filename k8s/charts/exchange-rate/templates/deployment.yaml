@@ -52,12 +52,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
             - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI
               value: "http://myapp-keycloak.default.svc.cluster.local:8080/realms/finclave"
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
               value: "http://myapp-keycloak.default.svc.cluster.local:8080/realms/finclave"
-            - name: FEIGN_EXCHANGE
-              value: "http://myapp-exchange.default.svc.cluster.local:8080"
           envFrom:
             - configMapRef:
                 name: {{ include "exchange-rate.fullname" . }}

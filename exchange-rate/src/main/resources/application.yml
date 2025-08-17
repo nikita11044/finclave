@@ -1,6 +1,18 @@
 spring:
   application:
     name: exchange-rate
+  cloud:
+    openfeign:
+      httpclient:
+        enabled: false
+      okhttp:
+        enabled: true
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
+            logger-level: basic
   security:
     oauth2:
       resourceserver:

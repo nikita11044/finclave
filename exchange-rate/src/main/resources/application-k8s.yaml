@@ -1,0 +1,10 @@
+spring:
+  main:
+    cloud-platform: kubernetes
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: false
+        include-not-ready-addresses: false
+        primary-port-name: http
