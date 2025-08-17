@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(value = "notification", url = "${feign.notification}")
+@FeignClient(name = "notification")
 public interface NotificationServiceClient {
 
     @GetMapping("/api/v1/notifications/{login}")
