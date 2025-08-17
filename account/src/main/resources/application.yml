@@ -42,6 +42,21 @@ spring:
             client-secret: Fdx84febgALBIuFdC1jLzSl6mT8PxJwa
             scope: profile
             clientAuthenticationMethod: client_secret_post
+  cloud:
+    openfeign:
+      httpclient:
+        enabled: false
+      okhttp:
+        enabled: true
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
+            logger-level: basic
+    loadbalancer:
+      retry:
+        enabled: true
 
 server:
   port: 8081

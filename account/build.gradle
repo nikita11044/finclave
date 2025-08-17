@@ -41,6 +41,9 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client"
+    implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client-loadbalancer"
+
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
