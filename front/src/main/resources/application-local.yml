@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+    discovery:
+      client:
+        simple:
+          instances:
+            account:
+              - uri: http://localhost:8081
+            cash:
+              - uri: http://localhost:8084
+            exchange:
+              - uri: http://localhost:8083
+            notification:
+              - uri: http://localhost:8090
+            transfer:
+              - uri: http://localhost:8085

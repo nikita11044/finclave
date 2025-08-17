@@ -38,6 +38,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
+     implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client"
+     implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client-loadbalancer"
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 

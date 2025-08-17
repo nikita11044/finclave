@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "account", url = "${feign.account}")
+@FeignClient(name = "account")
 public interface AccountServiceClient {
 
     @GetMapping("/api/v1/users/{login}")

@@ -1,6 +1,21 @@
 spring:
   application:
     name: front
+  cloud:
+    openfeign:
+      httpclient:
+        enabled: false
+      okhttp:
+        enabled: true
+      client:
+        config:
+          default:
+            connect-timeout: 2000   # мс
+            read-timeout: 5000      # мс
+            logger-level: basic
+    loadbalancer:
+      retry:
+        enabled: true
   security:
     oauth2:
       resourceserver:
@@ -21,10 +36,3 @@ spring:
 
 server:
   port: 8080
-
-feign:
-  account: http://localhost:8081
-  cash: http://localhost:8084
-  exchange: http://localhost:8083
-  notification: http://localhost:8090
-  transfer: http://localhost:8085
