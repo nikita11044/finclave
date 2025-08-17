@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+    discovery:
+      client:
+        simple:
+          instances:
+            account:
+              - uri: http://localhost:8081
+            exchange:
+              - uri: http://localhost:8083
+            blocker:
+              - uri: http://localhost:8089
