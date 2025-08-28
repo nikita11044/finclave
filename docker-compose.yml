@@ -50,8 +50,8 @@ services:
     ports:
       - "9090:8080"
     volumes:
-      - /opt/keycloak/data/import
-    command: [ "start-dev" ]
+      - ./keycloak/realm-config:/opt/keycloak/data/import
+    command: ["start-dev", "--import-realm"]
 
   account-app:
     image: 'account-app:latest'

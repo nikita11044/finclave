@@ -1,9 +1,7 @@
 package equinox.account.service;
 
-import equinox.account.client.NotificationServiceClient;
 import equinox.account.jpa.NotificationOutboxRepository;
 import equinox.account.mapper.NotificationMapper;
-import equinox.account.model.dto.NotificationDto;
 import equinox.account.model.entity.NotificationOutboxEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationOutboxService {
 
-    private final NotificationServiceClient notificationServiceClient;
+    private final KafkaNotificationService kafkaNotificationService;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final NotificationMapper notificationMapper;
 
@@ -38,7 +36,7 @@ public class NotificationOutboxService {
                     .findAllByDeliveredFalse()
                     .forEach(n -> {
 
-                        notificationServiceClient.createNotification(
+                        kafkaNotificationService.createNotification(
                             notificationMapper.toDto(n)
                         );
 
