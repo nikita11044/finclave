@@ -16,7 +16,7 @@ public class KafkaNotificationService {
     private final KafkaTemplate<String, String> notificationsKafkaTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    void createNotification(NotificationDto dto) {
+    public void createNotification(NotificationDto dto) {
         try {
             notificationsKafkaTemplate.send(
                     "notifications",
