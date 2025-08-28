@@ -34,5 +34,6 @@ spring:
 server:
   port: 8082
 
-feign:
-  exchange: http://localhost:8083
+kafka:
+  bootstrap:
+    servers: localhost:9092

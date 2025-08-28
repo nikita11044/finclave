@@ -1,12 +1,20 @@
 package equinox.exchange.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import equinox.exchange.jpa.ExchangeRepository;
 import equinox.exchange.mapper.ExchangeMapper;
 import equinox.exchange.model.dto.ExchangeRateDto;
 import equinox.exchange.model.dto.ExchangeRateUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.DltStrategy;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +29,7 @@ public class ExchangeService {
 
     private final ExchangeRepository exchangeRepository;
     private final ExchangeMapper exchangeMapper;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     public BigDecimal convert(String from, String to, BigDecimal amount) {
@@ -53,13 +62,30 @@ public class ExchangeService {
                 .toList();
     }
 
-
     @Transactional
-    public void updateExchangeRate(ExchangeRateUpdateDto dto) {
-        exchangeRepository.findRandomByBaseFalse()
-                .ifPresent(rate -> {
-                    rate.setRate(dto.getRate());
-                    exchangeRepository.save(rate);
-                });
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 1_00, multiplier = 2, maxDelay = 8_000),
+            retryTopicSuffix = "-retry",
+            dltTopicSuffix = "-dlt",
+            dltStrategy = DltStrategy.FAIL_ON_ERROR
+    )
+    @KafkaListener(topics = "exchange-rate", containerFactory = "customKafkaListenerContainerFactory")
+    public void updateRandomCurrency(String randomCurrencyDto) {
+        try {
+            ExchangeRateUpdateDto dto = objectMapper.readValue(randomCurrencyDto, ExchangeRateUpdateDto.class);
+            exchangeRepository.findRandomByBaseFalse()
+                    .ifPresent(rate -> {
+                        rate.setRate(dto.getRate());
+                        exchangeRepository.save(rate);
+                    });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @DltHandler
+    public void handleDltMessage(ConsumerRecord<?, ?> record) {
+        System.out.println("Message in DLT: " + record.value());
     }
 }

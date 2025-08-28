@@ -26,6 +26,7 @@ public class NotificationsService {
     private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
+    @Transactional
     @RetryableTopic(
             attempts = "5",
             backoff = @Backoff(delay = 1_00, multiplier = 2, maxDelay = 8_000),

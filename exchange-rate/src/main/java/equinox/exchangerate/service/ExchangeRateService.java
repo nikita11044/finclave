@@ -14,7 +14,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class ExchangeRateService {
-    private final ExchangeServiceClient exchangeServiceClient;
+    private final KafkaExchangeRateService kafkaExchangeRateService;
 
     @Scheduled(fixedDelay = 1000)
     public void update() {
@@ -22,6 +22,6 @@ public class ExchangeRateService {
                 .rate(BigDecimal.valueOf(1 + (99 * new Random().nextDouble())))
                 .build();
 
-        exchangeServiceClient.updateExchangeRate(dto);
+        kafkaExchangeRateService.updateExchangeRate(dto);
     }
 }

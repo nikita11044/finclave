@@ -23,11 +23,6 @@ public class ExchangeController {
 
     private final ExchangeService exchangeService;
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(Authentication auth) {
-        return ResponseEntity.ok(auth);
-    }
-
 
     @GetMapping
     public List<ExchangeRateDto> getRates() {
@@ -41,10 +36,5 @@ public class ExchangeController {
             @RequestParam("amount") BigDecimal amount
     ) {
         return exchangeService.convert(from, to, amount);
-    }
-
-    @PostMapping("/updateExchangeRate")
-    public void updateRandomCurrency(@RequestBody ExchangeRateUpdateDto dto) {
-        exchangeService.updateExchangeRate(dto);
     }
 }
