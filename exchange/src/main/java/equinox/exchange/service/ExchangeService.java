@@ -71,9 +71,9 @@ public class ExchangeService {
             dltStrategy = DltStrategy.FAIL_ON_ERROR
     )
     @KafkaListener(topics = "exchange-rate", containerFactory = "customKafkaListenerContainerFactory")
-    public void updateRandomCurrency(String randomCurrencyDto) {
+    public void updateRandomCurrency(String exchangeRate) {
         try {
-            ExchangeRateUpdateDto dto = objectMapper.readValue(randomCurrencyDto, ExchangeRateUpdateDto.class);
+            ExchangeRateUpdateDto dto = objectMapper.readValue(exchangeRate, ExchangeRateUpdateDto.class);
             exchangeRepository.findRandomByBaseFalse()
                     .ifPresent(rate -> {
                         rate.setRate(dto.getRate());

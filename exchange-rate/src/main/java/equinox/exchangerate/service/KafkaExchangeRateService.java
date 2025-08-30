@@ -16,7 +16,7 @@ public class KafkaExchangeRateService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
-    void updateExchangeRate(ExchangeRateUpdateDto dto) {
+    public void updateExchangeRate(ExchangeRateUpdateDto dto) {
         try {
             kafkaTemplate.send(
                     "exchange-rate",

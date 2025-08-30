@@ -30,7 +30,7 @@ public class KafkaConfig {
     @Bean
     NewTopic orders() {
         return new NewTopic(
-                "exchange-generator",
+                "exchange-rate",
                 1,
                 (short) 1
         );
