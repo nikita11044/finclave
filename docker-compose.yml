@@ -62,9 +62,7 @@ services:
     depends_on:
       - db-account
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
+      - kafka
     ports:
       - "8081:8081"
     environment:
@@ -73,8 +71,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=account_password
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   blocker-app:
     image: 'blocker-app:latest'
@@ -84,16 +81,11 @@ services:
     restart: "on-failure"
     depends_on:
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
     ports:
       - "8089:8089"
     environment:
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
 
   cash-app:
     image: 'cash-app:latest'
@@ -103,53 +95,11 @@ services:
     restart: "on-failure"
     depends_on:
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
     ports:
       - "8084:8084"
     environment:
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
-
-  config-server-app:
-    image: 'config-server-app:latest'
-    build:
-      context: ./config-server
-    container_name: config-server-app
-    restart: "on-failure"
-    ports:
-      - "8088:8088"
-
-  eureka-app:
-    image: 'eureka-app:latest'
-    build:
-      context: ./eureka
-    container_name: eureka-app
-    restart: "on-failure"
-    depends_on:
-      - config-server-app
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
-
-  gateway-app:
-    image: 'gateway-app:latest'
-    build:
-      context: ./gateway
-    container_name: gateway-app
-    restart: "on-failure"
-    depends_on:
-      - config-server-app
-      - eureka-app
-    ports:
-      - "8091:8091"
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
 
   exchange-app:
     image: 'exchange-app:latest'
@@ -160,19 +110,16 @@ services:
     depends_on:
       - db-exchange
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
+      - kafka
     ports:
       - "8083:8083"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/postgres
       - SPRING_DATASOURCE_USERNAME=exchange_user
       - SPRING_DATASOURCE_PASSWORD=exchange_password
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
 
   exchange-rate-app:
     image: 'exchange-rate-app:latest'
@@ -182,16 +129,13 @@ services:
     restart: "on-failure"
     depends_on:
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
+      - kafka
     ports:
       - "8082:8082"
     environment:
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   front-app:
     image: 'front-app:latest'
@@ -201,15 +145,10 @@ services:
     restart: "on-failure"
     depends_on:
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
     ports:
       - "8080:8080"
     environment:
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
 
   notification-app:
     image: 'notification-app:latest'
@@ -220,19 +159,16 @@ services:
     depends_on:
       - db-notification
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
+      - kafka
     ports:
       - "8090:8090"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db-notification:5434/postgres
       - SPRING_DATASOURCE_USERNAME=notification_user
       - SPRING_DATASOURCE_PASSWORD=notification_password
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
 
   transfer-app:
     image: 'transfer-app:latest'
@@ -242,13 +178,30 @@ services:
     restart: "on-failure"
     depends_on:
       - keycloak
-      - config-server-app
-      - eureka-app
-      - gateway-app
     ports:
       - "8085:8085"
     environment:
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/finclave
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://keycloak:8080/realms/finclave
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver-app:8761/eureka/
-      - SPRING_CONFIG_IMPORT=configserver:http://config-server-app:8088
+
+  kafka:
+    image: bitnami/kafka:3.7
+    container_name: kafka
+    restart: unless-stopped
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES=500000
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/bitnami/kafka

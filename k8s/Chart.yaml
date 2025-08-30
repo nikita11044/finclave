@@ -45,3 +45,6 @@ dependencies:
     alias: notification-db
     version: "14.2.3"
     repository: "https://charts.bitnami.com/bitnami"
+  - name: kafka
+    version: "19.3.3"
+    repository: "https://charts.bitnami.com/bitnami"

@@ -243,3 +243,10 @@ notification-db:
     persistence:
       enabled: true
       size: 1Gi
+
+kafka:
+  replicaCount: 1
+  persistence:
+    enabled: false
+  config:
+    log_flush_interval_messages: "500000"
