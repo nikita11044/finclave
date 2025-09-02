@@ -1,6 +1,5 @@
 package equinox.exchangerate.service;
 
-import equinox.exchangerate.client.ExchangeServiceClient;
 import equinox.exchangerate.model.dto.ExchangeRateUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,11 @@ public class ExchangeRateService {
                 .rate(BigDecimal.valueOf(1 + (99 * new Random().nextDouble())))
                 .build();
 
-        kafkaExchangeRateService.updateExchangeRate(dto);
+        kafkaExchangeRateService.updateExchangeRateAsync(dto)
+                .whenComplete((res, ex) -> {
+                    if (ex != null) {
+                        log.error("Failed to send ExchangeRate update", ex);
+                    }
+                });
     }
 }

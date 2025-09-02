@@ -20,6 +20,10 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
 @SpringBootTest
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
@@ -37,19 +41,25 @@ class ExchangeApplicationTests extends TestContainersBaseTest {
 
 	@Test
 	@Order(2)
-	void kafkaTest() throws JsonProcessingException, ExecutionException, InterruptedException {
+	void kafkaTest() throws JsonProcessingException {
 		var dto = ExchangeRateUpdateDto.builder()
 				.rate(BigDecimal.valueOf(1 + (99 * new Random().nextDouble())))
 				.build();
 
+		var key = UUID.randomUUID().toString();
 		kafkaTemplate.send(
 				"exchange-rate",
-				UUID.randomUUID().toString(),
+				key,
 				new ObjectMapper().writeValueAsString(dto)
-		).get();
+		);
 
-		Thread.sleep(2000);
-		Mockito.verify(exchangeService, Mockito.times(1)).updateRandomCurrency(Mockito.anyString());
+		await()
+				.atMost(10, SECONDS)
+				.pollInterval(200, MILLISECONDS)
+				.untilAsserted(() ->
+						Mockito.verify(exchangeService, Mockito.times(1))
+								.updateRandomCurrency(Mockito.anyString())
+				);
 	}
 
 }

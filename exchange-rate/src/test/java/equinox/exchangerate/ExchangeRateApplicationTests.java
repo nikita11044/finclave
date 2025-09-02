@@ -19,8 +19,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -53,15 +57,20 @@ class ExchangeRateApplicationTests {
 					.rate(BigDecimal.valueOf(1 + (99 * new Random().nextDouble())))
 					.build();
 
-			kafkaExchangeRateService.updateExchangeRate(dto);
+			kafkaExchangeRateService.updateExchangeRateAsync(dto);
 
-			ConsumerRecords<String, String> records = KafkaTestUtils.getRecords(consumerForTest);
+			await()
+					.atMost(10, TimeUnit.SECONDS)
+					.untilAsserted(() -> {
+						ConsumerRecords<String, String> records =
+								KafkaTestUtils.getRecords(consumerForTest, Duration.ofSeconds(1));
 
-			for (ConsumerRecord<String, String> record : records) {
-				Assertions.assertNotNull(record.key());
-				Assertions.assertNotNull(record.value());
-			}
+						Assertions.assertFalse(records.isEmpty());
+						for (ConsumerRecord<String, String> record : records) {
+							Assertions.assertNotNull(record.key());
+							Assertions.assertNotNull(record.value());
+						}
+					});
 		}
 	}
-
 }

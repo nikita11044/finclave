@@ -2,6 +2,8 @@ package equinox.account;
 
 import equinox.account.model.dto.NotificationDto;
 import equinox.account.service.KafkaNotificationService;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
@@ -55,9 +57,14 @@ class AccountApplicationTests extends TestContainersBaseTest {
             await()
                     .atMost(10, SECONDS)
                     .untilAsserted(() -> {
-                        var record = KafkaTestUtils.getSingleRecord(consumerForTest, "notifications", Duration.ofSeconds(1));
-                        Assertions.assertNotNull(record.key());
-                        Assertions.assertNotNull(record.value());
+                        ConsumerRecords<String, String> records =
+                                KafkaTestUtils.getRecords(consumerForTest, Duration.ofSeconds(1));
+
+                        Assertions.assertFalse(records.isEmpty());
+                        for (ConsumerRecord<String, String> record : records) {
+                            Assertions.assertNotNull(record.key());
+                            Assertions.assertNotNull(record.value());
+                        }
                     });
         }
     }

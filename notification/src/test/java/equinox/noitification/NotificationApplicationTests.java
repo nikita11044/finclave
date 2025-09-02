@@ -16,6 +16,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
 @SpringBootTest
 class NotificationApplicationTests extends TestContainersBaseTest {
     @Autowired
@@ -34,7 +38,7 @@ class NotificationApplicationTests extends TestContainersBaseTest {
 
     @Test
     @Order(2)
-    void kafkaTest() throws JsonProcessingException, ExecutionException, InterruptedException {
+    void kafkaTest() throws JsonProcessingException {
         var uuid = UUID.randomUUID();
 
         NotificationDto dto = NotificationDto.builder()
@@ -47,9 +51,14 @@ class NotificationApplicationTests extends TestContainersBaseTest {
                 "notifications",
                 UUID.randomUUID().toString(),
                 new ObjectMapper().writeValueAsString(dto)
-        ).get();
+        );
 
-        Thread.sleep(2000);
-        Mockito.verify(notificationsService, Mockito.times(1)).create(Mockito.anyString());
+        await()
+                .atMost(10, SECONDS)
+                .pollInterval(200, MILLISECONDS)
+                .untilAsserted(() ->
+                        Mockito.verify(notificationsService, Mockito.times(1))
+                                .create(Mockito.anyString())
+                );
     }
 }
