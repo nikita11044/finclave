@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Slf4j
 @Service
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationOutboxService {
 
     private final KafkaNotificationService kafkaNotificationService;
+    private final TransactionTemplate transactionTemplate;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final NotificationMapper notificationMapper;
 
@@ -31,20 +33,22 @@ public class NotificationOutboxService {
     @Transactional
     @Scheduled(fixedDelay = 1000)
     public void sendScheduledNotifications() {
-        try {
-            notificationOutboxRepository
-                    .findAllByDeliveredFalse()
-                    .forEach(n -> {
+        notificationOutboxRepository
+                .findAllByDeliveredFalse()
+                .forEach(n -> {
+                    var dto = notificationMapper.toDto(n);
 
-                        kafkaNotificationService.createNotification(
-                            notificationMapper.toDto(n)
-                        );
-
-                        n.setDelivered(true);
-                        notificationOutboxRepository.save(n);
+                    kafkaNotificationService.createNotificationAsync(dto)
+                    .whenComplete((res, ex) -> {
+                        if (ex == null) {
+                            transactionTemplate.execute(status -> {
+                                notificationOutboxRepository.markDelivered(n.getId());
+                                return null;
+                            });
+                        } else {
+                            log.error("Kafka send failed for outbox, id={}", n.getId(), ex);
+                        }
                     });
-        } catch (Exception e) {
-            log.info(e.getMessage(), e);
-        }
+        });
     }
 }

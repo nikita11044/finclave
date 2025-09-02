@@ -16,6 +16,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+
 @SpringBootTest
 class AccountApplicationTests extends TestContainersBaseTest {
     @Autowired
@@ -47,13 +50,15 @@ class AccountApplicationTests extends TestContainersBaseTest {
         ).createConsumer()) {
             consumerForTest.subscribe(List.of("notifications"));
 
-            kafkaNotificationService.createNotification(dto);
+            kafkaNotificationService.createNotificationAsync(dto);
 
-
-            var inputMessage = KafkaTestUtils.getSingleRecord(consumerForTest, "notifications", Duration.ofSeconds(10));
-            Assertions.assertNotNull(inputMessage.key());
-            Assertions.assertNotNull(inputMessage.value());
+            await()
+                    .atMost(10, SECONDS)
+                    .untilAsserted(() -> {
+                        var record = KafkaTestUtils.getSingleRecord(consumerForTest, "notifications", Duration.ofSeconds(1));
+                        Assertions.assertNotNull(record.key());
+                        Assertions.assertNotNull(record.value());
+                    });
         }
     }
-
 }
