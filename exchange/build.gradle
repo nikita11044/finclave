@@ -50,6 +50,7 @@ dependencies {
 
 	implementation "io.micrometer:micrometer-tracing-bridge-brave"
 	implementation "io.zipkin.reporter2:zipkin-reporter-brave"
+	runtimeOnly "io.micrometer:micrometer-registry-prometheus"
 
 	testImplementation "org.springframework.kafka:spring-kafka-test"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

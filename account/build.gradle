@@ -58,6 +58,8 @@ dependencies {
     implementation "io.micrometer:micrometer-tracing-bridge-brave"
     implementation "io.zipkin.reporter2:zipkin-reporter-brave"
 
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
