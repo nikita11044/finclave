@@ -48,3 +48,21 @@ dependencies:
   - name: kafka
     version: "19.3.3"
     repository: "https://charts.bitnami.com/bitnami"
+  - name: zipkin
+    version: "0.5.0"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: prometheus
+    version: "18.1.1"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: grafana
+    version: "8.2.0"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: elasticsearch
+    version: "20.1.2"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: logstash
+    version: "6.2.0"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: kibana
+    version: "12.1.0"
+    repository: "https://charts.bitnami.com/bitnami"
