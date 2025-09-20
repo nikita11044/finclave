@@ -9,11 +9,28 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+ext {
+    slf4jVersion = '2.0.16'
+    log4jVersion = '2.24.3'
 }
 
-test {
-    useJUnitPlatform()
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation project(':logging-config')
+        implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+        implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4jVersion}"
+
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

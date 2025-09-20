@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/exchange-rate" />
             <option value="$PROJECT_DIR$/front" />
             <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/logging-config" />
             <option value="$PROJECT_DIR$/notification" />
           </set>
         </option>
@@ -85,6 +86,9 @@
             <option value="$PROJECT_DIR$/gateway" />
           </set>
         </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/logging-config" />
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/transfer" />

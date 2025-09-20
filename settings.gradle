@@ -1,5 +1,6 @@
 rootProject.name = 'finclave'
 
+include 'logging-config'
 include 'account'
 include 'front'
 include 'exchange'
