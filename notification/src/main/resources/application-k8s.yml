@@ -9,6 +9,9 @@ spring:
         include-not-ready-addresses: false
         primary-port-name: http
 
+  datasource:
+    url: jdbc:postgresql://postgres:5432/notification_db
+
   security:
     oauth2:
       resourceserver:

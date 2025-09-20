@@ -8,3 +8,18 @@ spring:
         all-namespaces: false
         include-not-ready-addresses: false
         primary-port-name: http
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/finclave
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/finclave
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

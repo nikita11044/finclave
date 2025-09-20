@@ -9,6 +9,9 @@ spring:
         include-not-ready-addresses: false
         primary-port-name: http
 
+  datasource:
+    url: jdbc:postgresql://postgres:5432/exchange_db
+
   security:
     oauth2:
       resourceserver:
@@ -18,10 +21,6 @@ spring:
         provider:
           keycloak:
             issuer-uri: http://keycloak:8080/realms/finclave
-
-kafka:
-  bootstrap:
-    servers: kafka:9092
 
 management:
   zipkin:
